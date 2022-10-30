@@ -115,7 +115,7 @@ hideBtn.place(x=550, y=410)
 # Login logic here
 maxLoginAttempts = 3
 def login():
-    global maxLoginAttempts, successLogin
+    global maxLoginAttempts
     username = labelUsername.cget("text")
     password = inputPassword.get()
     passwordError = "The password is incorrect. Try again."
