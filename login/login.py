@@ -1,4 +1,3 @@
-from os import stat
 from tkinter import *
 
 # Font
@@ -10,13 +9,13 @@ inputColor = "#808080"
 fontColor = "#ffffff"
 
 # GUI Dimension
-window = Tk()
+loginPage = Tk()
 screenWidth=850
 screenHeight=800
-window.geometry(str(screenWidth) + "x" + str(screenHeight))
-window.configure(bg=backgroundColor)
+loginPage.geometry(str(screenWidth) + "x" + str(screenHeight))
+loginPage.configure(bg=backgroundColor)
 canvas = Canvas(
-    window,
+    loginPage,
     bg=backgroundColor,
     height=screenHeight,
     width=screenWidth,
@@ -24,12 +23,40 @@ canvas = Canvas(
     highlightthickness=0)
 canvas.place(x=0, y=0)
 
-window.title("Login")
+loginPage.title("Login")
 
-# Profile Image
+# TODO admin and user screen functions?
+def mainScreen():
+    # GUI Dimension
+    mainPage = Tk()
+    screenWidth=850
+    screenHeight=800
+    mainPage.geometry(str(screenWidth) + "x" + str(screenHeight))
+    mainPage.configure(bg=backgroundColor)
+    canvas = Canvas(
+        mainPage,
+        bg=backgroundColor,
+        height=screenHeight,
+        width=screenWidth,
+        bd=0,
+        highlightthickness=0)
+    canvas.place(x=0, y=0)
+
+    mainPage.title("Desktop")
+
+    mainPage.resizable(False, False)
+    mainPage.mainloop()
+
+# ----------------------------------------------------------------------------------
+# PROFILE ICON
+# ----------------------------------------------------------------------------------
 profileIcon = PhotoImage(file=f"./images/profile.png")
-profileLabel = Label(window, image=profileIcon, relief=FLAT, bg=backgroundColor)
+profileLabel = Label(loginPage, image=profileIcon, relief=FLAT, bg=backgroundColor)
 profileLabel.place(x=305, y=50)
+
+# ----------------------------------------------------------------------------------
+# USERNAME
+# ----------------------------------------------------------------------------------
 
 # Username based on selected local user. Default: User
 def getUser(selectedUser):
@@ -40,19 +67,21 @@ def getUser(selectedUser):
     else:
         labelUsername.config(text="User")
 
-labelUsername = Label(window, text="User", bg=labelColor)
+labelUsername = Label(loginPage, text="User", bg=labelColor)
 labelUsername.config(font=(font, 20), fg=fontColor)
 labelUsername.place(x=400, y=350)
 
-# Password
+# ----------------------------------------------------------------------------------
+# PASSWORD / AUDIO KEY INPUT
+# ----------------------------------------------------------------------------------
 def inFocus(args):
-    inputPassword.delete(0, "end")
+    inputPassword.delete(0, END)
     inputPassword.config(show="•")
 
 def outFocus(args):
-    inputPassword.delete(0, "end")
+    inputPassword.delete(0, END)
     inputPassword.insert(0, "Password")
-    window.focus()
+    loginPage.focus()
 
 inputPassword = Entry(
     bg=inputColor,
@@ -83,53 +112,86 @@ showIcon = PhotoImage(file=f"./images/eye-slash.png")
 hideBtn = Button(image=hideIcon, command=showPassword, relief=FLAT, bg=inputColor, activebackground=inputColor)
 hideBtn.place(x=550, y=410)
 
-# Login Logic here
-# TODO
+# Login logic here
 maxLoginAttempts = 3
 def login():
-    global maxLoginAttempts
+    global maxLoginAttempts, successLogin
     username = labelUsername.cget("text")
     password = inputPassword.get()
+    passwordError = "The password is incorrect. Try again."
+    passwordLimitError = "Account locked. Please input audio key"
 
-    if maxLoginAttempts >= 1:
+    if maxLoginAttempts > 1:
         if password == "":
             print("No password entered")
             maxLoginAttempts -=1
-        
-        elif username.lower() == user and password != userPwd:
-            print("Wrong user password") # "The password is incorrect. Try again"
-            inputPassword.delete(0, END)
-            maxLoginAttempts -=1
-        
-        elif username.lower() == admin and password != adminPwd:
-            print("Wrong admin password") # "The password is incorrect. Try again"
-            inputPassword.delete(0, END)
-            maxLoginAttempts -=1
+            errorMessage(passwordError)
+
+        elif username.lower() == user and password == userPwd:
+            print("Logged in as User")
+            loginPage.destroy()
+            mainScreen()
+
+        elif username.lower() == admin and password == adminPwd:
+            print("Logged in as Admin")
+            loginPage.destroy()
+            mainScreen()
 
         else:
-            print("Logging in")
-            #import mainScreen
-            #mainScreen.mainScreen()
-    else:
-        # Lock password entry and call audioKey function
-        print("No more attempts")
-        inputPassword.config(state="disabled")
-        audioKeyInput()
+            print("Wrong user password")
+            inputPassword.delete(0, END)
+            maxLoginAttempts -=1
+            errorMessage(passwordError)
+
+    elif maxLoginAttempts == 1:
+        if password == "":
+            print("No password entered")
+            maxLoginAttempts -=1
+            errorMessage(passwordError)
+
+        elif username.lower() == user and password == userPwd:
+            print("Logged in as User")
+            loginPage.destroy()
+            mainScreen()
+
+        elif username.lower() == admin and password == adminPwd:
+            print("Logged in as Admin")
+            loginPage.destroy()
+            mainScreen()
+
+        else:
+            print("No more attempts.  Password field disabled")
+            inputPassword.delete(0, END)
+            inputPassword.insert(0, "DISABLED")
+            inputPassword.config(state="disabled", show="", justify="center", disabledbackground="grey")
+            hideBtn.config(state="disabled")
+            errorMessage(passwordLimitError)
+            audioKeyInput()
 
 # Enter key for login
 enterIcon = PhotoImage(file=f"./images/arrow-right.png")
 enterBtn = Button(image=enterIcon, command=login, relief=FLAT, bg=inputColor, activebackground=inputColor)
 enterBtn.place(x=580, y=410)
 
+# Error message label
+def errorMessage(msg):
+    labelErrorMsg = Label(loginPage, text=msg, bg=labelColor)
+    labelErrorMsg.config(font=(font, 9), fg=fontColor)
+    labelErrorMsg.place(
+        x=330, y=445)
+
 # After 3 failed attempts - Password Input becomes Audio Input
+# TODO Bind to audio recognition
 def audioKeyInput():
     audioBtn = Button(text="Audio Key", command="", relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
     audioBtn.config(font=(font, 12), fg=fontColor)
     audioBtn.place(
-        x=390, y=450,
+        x=380, y=480,
         width=100, height=50) 
 
-# User Credentials
+# ----------------------------------------------------------------------------------
+# USER CREDENTIALS
+# ----------------------------------------------------------------------------------
 users = {
     "user": "userPassword",
     "admin": "adminPassword"}
@@ -142,7 +204,7 @@ adminPwd = list(users.values())[1]
 
 # List of Local Users
 userIcon = PhotoImage(file=f"./images/user.png")
-userLabel = Label(window, image=userIcon, relief=FLAT, bg=backgroundColor)
+userLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
 userLabel.place(x=1, y=650)
 userBtn = Button(text=user, command=lambda username=user: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
 userBtn.config(font=(font, 12), fg=fontColor)
@@ -150,7 +212,7 @@ userBtn.place(
     x=55, y=650,
     width=50, height=50) 
 
-adminLabel = Label(window, image=userIcon, relief=FLAT, bg=backgroundColor)
+adminLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
 adminLabel.place(x=1, y=705)
 adminBtn = Button(text=admin, command=lambda username=admin: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
 adminBtn.config(font=(font, 12), fg=fontColor)
@@ -158,8 +220,10 @@ adminBtn.place(
     x=55, y=705,
     width=50, height=50) 
 
-    
+# ----------------------------------------------------------------------------------
+# RUN TK WINDOW
+# ----------------------------------------------------------------------------------
 # Resizable?
-window.resizable(False, False)
+loginPage.resizable(False, False)
 # Keep app window running
-window.mainloop()
+loginPage.mainloop()
