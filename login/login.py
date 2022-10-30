@@ -1,3 +1,4 @@
+from os import stat
 from tkinter import *
 
 # Font
@@ -82,18 +83,51 @@ showIcon = PhotoImage(file=f"./images/eye-slash.png")
 hideBtn = Button(image=hideIcon, command=showPassword, relief=FLAT, bg=inputColor, activebackground=inputColor)
 hideBtn.place(x=550, y=410)
 
+# Login Logic here
+# TODO
+maxLoginAttempts = 3
+def login():
+    global maxLoginAttempts
+    username = labelUsername.cget("text")
+    password = inputPassword.get()
+
+    if maxLoginAttempts >= 1:
+        if password == "":
+            print("No password entered")
+            maxLoginAttempts -=1
+        
+        elif username.lower() == user and password != userPwd:
+            print("Wrong user password") # "The password is incorrect. Try again"
+            inputPassword.delete(0, END)
+            maxLoginAttempts -=1
+        
+        elif username.lower() == admin and password != adminPwd:
+            print("Wrong admin password") # "The password is incorrect. Try again"
+            inputPassword.delete(0, END)
+            maxLoginAttempts -=1
+
+        else:
+            print("Logging in")
+            #import mainScreen
+            #mainScreen.mainScreen()
+    else:
+        # Lock password entry and call audioKey function
+        print("No more attempts")
+        inputPassword.config(state="disabled")
+        audioKeyInput()
+
 # Enter key for login
 enterIcon = PhotoImage(file=f"./images/arrow-right.png")
-enterBtn = Button(image=enterIcon, command="", relief=FLAT, bg=inputColor, activebackground=inputColor)
+enterBtn = Button(image=enterIcon, command=login, relief=FLAT, bg=inputColor, activebackground=inputColor)
 enterBtn.place(x=580, y=410)
 
 # After 3 failed attempts - Password Input becomes Audio Input
-# TODO
-audioBtn = Button(text="Audio Key", command="", relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
-audioBtn.config(font=(font, 12), fg=fontColor)
-audioBtn.place(
-    x=390, y=450,
-    width=100, height=50) 
+def audioKeyInput():
+    audioBtn = Button(text="Audio Key", command="", relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
+    audioBtn.config(font=(font, 12), fg=fontColor)
+    audioBtn.place(
+        x=390, y=450,
+        width=100, height=50) 
 
 # User Credentials
 users = {
@@ -124,10 +158,7 @@ adminBtn.place(
     x=55, y=705,
     width=50, height=50) 
 
-# Login Logic here
-# TODO
-loginAttempts = 3
-
+    
 # Resizable?
 window.resizable(False, False)
 # Keep app window running
