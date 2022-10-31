@@ -1,4 +1,26 @@
 from tkinter import *
+import argparse
+import json
+import sys
+
+from dejavu import Dejavu
+from dejavu.logic.recognizer.microphone_recognizer import MicrophoneRecognizer
+
+# Connect to db
+DEFAULT_CONFIG_FILE = "dejavu.cnf.SAMPLE"
+def init(configpath):
+    """
+    Load config from a JSON file
+    """
+    try:
+        with open(configpath) as f:
+            config = json.load(f)
+    except IOError as err:
+        print(f"Cannot open configuration: {str(err)}. Exiting")
+        sys.exit(1)
+
+    # create a Dejavu instance
+    return Dejavu(config)
 
 # Font
 font = "Segoe UI"
@@ -46,6 +68,35 @@ def mainScreen():
 
     mainPage.resizable(False, False)
     mainPage.mainloop()
+
+# Autenticate user
+def authentication():
+    config_file = DEFAULT_CONFIG_FILE
+    djv = init(config_file)
+   
+    username = "six-sec-audio-pass" 	
+    PinUsername = "b'"+ str(username) +"'" 				# set format from database
+    songs = None 							# get match from database
+    source = 'mic' 							# input type for audio
+    opt_arg = 10 							# number of sec to recorded
+    songs = djv.recognize(MicrophoneRecognizer, seconds=opt_arg)
+    
+    if str(songs[0]) != "[]":						# check for no database output
+     checkuser =str(songs[0][0]['song_name'])				# username with most match
+    
+     inputMatchRatio = float(songs[0][0]['input_confidence'])		# get ratio match from input audio
+    
+     print("confident level max is 1: ",inputMatchRatio)
+     print(checkuser)
+    
+     if checkuser == PinUsername and inputMatchRatio >= 0.1:		# username must be equal from user name from database, ratio match must be more then 0.1 for now
+      mainScreen()
+     else:
+      errorMessage("Audio authentication fail ")
+    else:
+     errorMessage("Audio authentication fail ")
+     
+     
 
 # ----------------------------------------------------------------------------------
 # PROFILE ICON
@@ -183,11 +234,13 @@ def errorMessage(msg):
 # After 3 failed attempts - Password Input becomes Audio Input
 # TODO Bind to audio recognition
 def audioKeyInput():
-    audioBtn = Button(text="Audio Key", command="", relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
+    audioBtn = Button(text="Audio Key", command=authentication, relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
     audioBtn.config(font=(font, 12), fg=fontColor)
     audioBtn.place(
         x=380, y=480,
         width=100, height=50) 
+
+
 
 # ----------------------------------------------------------------------------------
 # USER CREDENTIALS
