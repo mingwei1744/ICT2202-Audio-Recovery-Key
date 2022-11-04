@@ -1,0 +1,12 @@
+simpleaudio
+tones
+pyaudio
+ffmpeg
+pydub
+random
+numpy
+scipy
+matplotlib
+mysql-connector-python
+psycopg2-binary
+PyDejavu
