@@ -1,4 +1,5 @@
-# SIREN 🚨
+<h1 align="center">SIREN 🚨</h1> <br />
+
 SIREN is an implementation of an audio-based recovery key aim to impede digital forensic investigator from gaining access to a system easily. <br />
 This is a project for ICT2202 Digital Forensics that sets out to explore a technical solution that can be used for engaging in anti-forensics. <br />
 
@@ -21,7 +22,7 @@ This section explains the process of setting up SIREN
 * [`tones`](https://pypi.org/project/tones/), for generating tones and audio samples
 * [`pyaudio`](https://pypi.org/project/PyAudio/), for grabbing audio from microphone
 * [`ffmpeg`](https://github.com/FFmpeg/FFmpeg), for audio file format conversion
-* [`pydub`](http://pydub.com/), a Python `ffmpeg` wrapper
+* [`pydub`](http://pydub.com/), a Python ffmpeg wrapper
 * [`random`](), for generating randomized tones
 * [`numpy`](http://www.numpy.org/), for taking the FFT of audio signals
 * [`scipy`](http://www.scipy.org/), used in peak finding algorithms
@@ -66,7 +67,7 @@ This section explains the process of setting up SIREN
 ```
 
 ### Troubleshoot issues
-If pyaudio failed to install due on Ubuntu machines, install portaudio modules using the steps below  <br />
+If `pyaudio` failed to install on Ubuntu machines, install portaudio modules using the steps below  <br />
 ```
 sudo apt-get install libasound-dev
 wget http://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz
