@@ -113,19 +113,19 @@ profileIcon = PhotoImage(file=f"./images/profile.png")
 profileLabel = Label(loginPage, image=profileIcon, relief=FLAT, bg=backgroundColor)
 profileLabel.place(x=305, y=50)
 
+
 # ----------------------------------------------------------------------------------
 # USERNAME
 # ----------------------------------------------------------------------------------
 
-# Username based on selected local user. Default: User
-def getUser(selectedUser):
-    if selectedUser == user:
-        labelUsername.config(text="User")
-    elif selectedUser == admin:
-        labelUsername.config(text="Admin")
-    else:
-        labelUsername.config(text="User")
-
+# Username based on selected local user. Default: User - LOCAL USERS for testing
+# def getUser(selectedUser):
+#     if selectedUser == user:
+#         labelUsername.config(text="User")
+#     elif selectedUser == admin:
+#         labelUsername.config(text="Admin")
+#     else:
+#         labelUsername.config(text="User")
 # labelUsername = Label(loginPage, text="User")
 
 def inFocusLogin(args):
@@ -142,7 +142,6 @@ inputUsername.place(
 inputUsername.config(font=(font, 12))
 inputUsername.insert(0, "Username")
 inputUsername.bind("<FocusIn>", inFocusLogin)
-
 
 
 # ----------------------------------------------------------------------------------
@@ -276,7 +275,7 @@ def recoverSuccess():
 
 
 # ----------------------------------------------------------------------------------
-# USER CREDENTIALS
+# USER CREDENTIALS - LOCAL USERS for testing
 # ----------------------------------------------------------------------------------
 # users = {
 #    "user": "userPassword",
@@ -305,6 +304,7 @@ def recoverSuccess():
 # adminBtn.place(
 #    x=55, y=705,
 #    width=50, height=50) 
+
 
 # ----------------------------------------------------------------------------------
 # RUN TK WINDOW
