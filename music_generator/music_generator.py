@@ -96,4 +96,3 @@ if __name__ == "__main__":
     # quit button
     ttk.Button(frm, text="Quit", command=frm.destroy).grid(column=0, row=7)
     frm.mainloop()
-    samples = mixer.mix()
