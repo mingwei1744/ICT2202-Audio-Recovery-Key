@@ -7,17 +7,19 @@ from tones.mixer import Mixer
 from tones import SINE_WAVE,  SAWTOOTH_WAVE
 import shutil
 
+# list for notes
 notes = ['A', 'E', 'F', 'G', 'Ab', 'Bb', 'Db', 'Eb', 'Gb',
          'A#', 'C#', 'D#', 'E#', 'F#', 'G#']
+# list for octaves
 octaves = [1, 2, 3, 4, 5, 6]
-
+# instantiate mixer
 mixer = Mixer(44100, 0.5)
 
 
 def get_username():
     global username, filename
+    # set filename as username inputted by user
     filename = username.get()
-    # ttk.Label.configure(text=filename)
 
 
 # create a random music
@@ -58,29 +60,40 @@ def play_music():
 
 
 def download_music():
+    # search for directory
     f = askdirectory()
+    # copy file from current diretory to select directory
     shutil.copy(filename + '.wav', f)
 
 
 if __name__ == "__main__":
+    # instantiate ktinker
     frm = Tk()
-    frm.title('Music Generator')
-    frm.geometry("185x250")
-    ttk.Label(frm, text="Music Key Generator").grid(column=0, row=0)
-    ttk.Label(frm, text="Enter your preferred music name:").grid(column=0, row=1)
+    # GUI title
+    frm.title('SIREN Key Generator')
+    # size of GUI
+    frm.geometry("250x250")
+    # title label
+    ttk.Label(frm, text="SIREN Key Generator").grid(column=0, row=0)
+    # enter username label
+    ttk.Label(frm, text="Enter your username:").grid(column=0, row=1)
+    # username input
     username = ttk.Entry()
     username.grid(column=0, row=2)
-    confirm_name = ttk.Button(frm, text="Confirm name", command=get_username)
+    # confirm username button 
+    confirm_name = ttk.Button(frm, text="Confirm username", command=get_username)
     confirm_name.grid(column=0, row=3)
     username.focus_set()
-    play_btn = ttk.Button(frm, text="Generate Music Key", command=random_music)
-    generate_btn = ttk.Button(frm, text="Play Music", command=play_music)
-    play_btn.grid(column=0, row=4)
-    generate_btn.grid(column=0, row=5)
-    label = Label(frm)
-    label.grid(column=0, row=6)
-    save_file = ttk.Button(frm, text="Save audio file", command=download_music)
+    # generate audio key button
+    generate_btn = ttk.Button(frm, text="Generate SIREN Key", command=random_music)
+    # play audio key button
+    play_btn = ttk.Button(frm, text="Play SIREN", command=play_music)
+    generate_btn.grid(column=0, row=4)
+    play_btn.grid(column=0, row=5)
+    # save audio key button
+    save_file = ttk.Button(frm, text="Save SIREN file", command=download_music)
     save_file.grid(column=0, row=6)
+    # quit button
     ttk.Button(frm, text="Quit", command=frm.destroy).grid(column=0, row=7)
     frm.mainloop()
     samples = mixer.mix()
