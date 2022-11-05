@@ -81,12 +81,7 @@ def authentication():
     PinUsername = "b'"+ str(authenticateUser) +"'" 				# set format from database
     songs = None 							# get match from database
     source = 'mic' 							# input type for audio
-    # opt_arg = 5
-    # opt_arg = 10
-    opt_arg = 6
-    # opt_arg = 18
-    # opt_arg = 13
-    # opt_arg = 14 							# number of sec to recorded
+    opt_arg = 14 							# number of sec to recorded
     songs = djv.recognize(MicrophoneRecognizer, seconds=opt_arg)
     
     if str(songs[0]) != "[]":						# check for no database output
