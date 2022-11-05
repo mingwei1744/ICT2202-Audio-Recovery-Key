@@ -84,7 +84,7 @@ sudo pip install pyaudio
 
 ## 👨‍💻 Running the program
 
-### Run the music generator program start generating a key for a specific user
+### Run the music generator program to start generating a key for a specific user
 `cd music_generator` <br />
 `python3 music_generator.py`
 
@@ -94,7 +94,7 @@ sudo pip install pyaudio
 
 ![Generate audio key](screenshots/generate_key.png)
 
-### Playback the audio key or re-generate the audio to your liking. 
+### Playback the audio key or re-generate another audio to your liking. 
 
 ![Playback audio key](screenshots/play_generated_key.png)
 
