@@ -6,6 +6,7 @@ import sys
 from dejavu import Dejavu
 from dejavu.logic.recognizer.microphone_recognizer import MicrophoneRecognizer
 
+
 # Connect to db
 DEFAULT_CONFIG_FILE = "dejavu.cnf.SAMPLE"
 def init(configpath):
@@ -66,6 +67,8 @@ def mainScreen():
 
     mainPage.title("Desktop")
 
+    labelMainpage = Label(mainPage, text="Login successful!", bg=backgroundColor,fg=fontColor,font=("Arial",50))
+    labelMainpage.place(x=150, y=350)
     mainPage.resizable(False, False)
     mainPage.mainloop()
 
@@ -73,12 +76,17 @@ def mainScreen():
 def authentication():
     config_file = DEFAULT_CONFIG_FILE
     djv = init(config_file)
-   
-    username = "six-sec-audio-pass" 	
-    PinUsername = "b'"+ str(username) +"'" 				# set format from database
+    global username
+    authenticateUser = username	
+    PinUsername = "b'"+ str(authenticateUser) +"'" 				# set format from database
     songs = None 							# get match from database
     source = 'mic' 							# input type for audio
-    opt_arg = 10 							# number of sec to recorded
+    # opt_arg = 5
+    # opt_arg = 10
+    opt_arg = 6
+    # opt_arg = 18
+    # opt_arg = 13
+    # opt_arg = 14 							# number of sec to recorded
     songs = djv.recognize(MicrophoneRecognizer, seconds=opt_arg)
     
     if str(songs[0]) != "[]":						# check for no database output
@@ -90,7 +98,7 @@ def authentication():
      print(checkuser)
     
      if checkuser == PinUsername and inputMatchRatio >= 0.1:		# username must be equal from user name from database, ratio match must be more then 0.1 for now
-      mainScreen()
+      recoverSuccess()
      else:
       errorMessage("Audio authentication fail ")
     else:
@@ -118,13 +126,29 @@ def getUser(selectedUser):
     else:
         labelUsername.config(text="User")
 
-labelUsername = Label(loginPage, text="User", bg=labelColor)
-labelUsername.config(font=(font, 20), fg=fontColor)
-labelUsername.place(x=400, y=350)
+# labelUsername = Label(loginPage, text="User")
+
+def inFocusLogin(args):
+    inputUsername.delete(0, END)
+
+inputUsername = Entry(
+    bg=inputColor,
+    fg=fontColor,
+    bd=3,
+    font=20)
+inputUsername.place(
+    x=260, y=350,
+    width=350, height=42)
+inputUsername.config(font=(font, 12))
+inputUsername.insert(0, "Username")
+inputUsername.bind("<FocusIn>", inFocusLogin)
+
+
 
 # ----------------------------------------------------------------------------------
 # PASSWORD / AUDIO KEY INPUT
 # ----------------------------------------------------------------------------------
+
 def inFocus(args):
     inputPassword.delete(0, END)
     inputPassword.config(show="•")
@@ -167,24 +191,20 @@ hideBtn.place(x=550, y=410)
 maxLoginAttempts = 3
 def login():
     global maxLoginAttempts
-    username = labelUsername.cget("text")
-    password = inputPassword.get()
+    global username
+    username = inputUsername.get()
+    getpassword = inputPassword.get()
+    password = username + "Password"
     passwordError = "The password is incorrect. Try again."
     passwordLimitError = "Account locked. Please input audio key"
-
     if maxLoginAttempts > 1:
         if password == "":
             print("No password entered")
             maxLoginAttempts -=1
-            errorMessage(passwordError)
+            errorMessage(passwordError,0)
 
-        elif username.lower() == user and password == userPwd:
-            print("Logged in as User")
-            loginPage.destroy()
-            mainScreen()
-
-        elif username.lower() == admin and password == adminPwd:
-            print("Logged in as Admin")
+        elif getpassword == password:
+            print("Logged in as " + username)
             loginPage.destroy()
             mainScreen()
 
@@ -192,6 +212,7 @@ def login():
             print("Wrong user password")
             inputPassword.delete(0, END)
             maxLoginAttempts -=1
+            labelErrorMsg.after(0, labelErrorMsg.destroy)
             errorMessage(passwordError)
 
     elif maxLoginAttempts == 1:
@@ -200,13 +221,8 @@ def login():
             maxLoginAttempts -=1
             errorMessage(passwordError)
 
-        elif username.lower() == user and password == userPwd:
+        elif getpassword == password:
             print("Logged in as User")
-            loginPage.destroy()
-            mainScreen()
-
-        elif username.lower() == admin and password == adminPwd:
-            print("Logged in as Admin")
             loginPage.destroy()
             mainScreen()
 
@@ -216,6 +232,7 @@ def login():
             inputPassword.insert(0, "DISABLED")
             inputPassword.config(state="disabled", show="", justify="center", disabledbackground="grey")
             hideBtn.config(state="disabled")
+            labelErrorMsg.after(0, labelErrorMsg.destroy)
             errorMessage(passwordLimitError)
             audioKeyInput()
 
@@ -225,53 +242,69 @@ enterBtn = Button(image=enterIcon, command=login, relief=FLAT, bg=inputColor, ac
 enterBtn.place(x=580, y=410)
 
 # Error message label
+labelErrorMsg = Label(loginPage, text="", bg=labelColor)
 def errorMessage(msg):
     labelErrorMsg = Label(loginPage, text=msg, bg=labelColor)
-    labelErrorMsg.config(font=(font, 9), fg=fontColor)
+    labelErrorMsg.config(font=(font, 9), fg=fontColor, justify='center')
     labelErrorMsg.place(
         x=330, y=445)
 
 # After 3 failed attempts - Password Input becomes Audio Input
 # TODO Bind to audio recognition
+audioBtn = Button(text="Audio Key", command=authentication, relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
 def audioKeyInput():
-    audioBtn = Button(text="Audio Key", command=authentication, relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
     audioBtn.config(font=(font, 12), fg=fontColor)
     audioBtn.place(
         x=380, y=480,
-        width=100, height=50) 
+        width=100, height=50)
 
+
+def recoverSuccess():
+    global maxLoginAttempts
+    maxLoginAttempts += 3
+    recoverAccount = "Account recovered. Please enter your password."
+    errorMessage(recoverAccount)
+    inputPassword.config(font=(font, 12), state="normal", justify="left", show="")
+    hideBtn.config(state="normal")
+    inputPassword.delete(0, END)
+    inputPassword.insert(0, "Password")
+
+    inputPassword.bind("<FocusIn>", inFocus)
+    inputPassword.bind("<FocusOut>", outFocus)
+    labelErrorMsg.after(0, labelErrorMsg.destroy)
+    audioBtn.place_forget()
 
 
 # ----------------------------------------------------------------------------------
 # USER CREDENTIALS
 # ----------------------------------------------------------------------------------
-users = {
-    "user": "userPassword",
-    "admin": "adminPassword"}
+# users = {
+#    "user": "userPassword",
+#    "admin": "adminPassword"}
 
-user = list(users.keys())[0]
-userPwd = list(users.values())[0]
+# user = list(users.keys())[0]
+# userPwd = list(users.values())[0]
 
-admin = list(users.keys())[1]
-adminPwd = list(users.values())[1]
+# admin = list(users.keys())[1]
+# adminPwd = list(users.values())[1]
 
 # List of Local Users
-userIcon = PhotoImage(file=f"./images/user.png")
-userLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
-userLabel.place(x=1, y=650)
-userBtn = Button(text=user, command=lambda username=user: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
-userBtn.config(font=(font, 12), fg=fontColor)
-userBtn.place(
-    x=55, y=650,
-    width=50, height=50) 
+# userIcon = PhotoImage(file=f"./images/user.png")
+# userLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
+# userLabel.place(x=1, y=650)
+# userBtn = Button(text=user, command=lambda username=user: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
+# userBtn.config(font=(font, 12), fg=fontColor)
+# userBtn.place(
+#    x=55, y=650,
+#    width=50, height=50) 
 
-adminLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
-adminLabel.place(x=1, y=705)
-adminBtn = Button(text=admin, command=lambda username=admin: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
-adminBtn.config(font=(font, 12), fg=fontColor)
-adminBtn.place(
-    x=55, y=705,
-    width=50, height=50) 
+# adminLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
+# adminLabel.place(x=1, y=705)
+# adminBtn = Button(text=admin, command=lambda username=admin: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
+# adminBtn.config(font=(font, 12), fg=fontColor)
+# adminBtn.place(
+#    x=55, y=705,
+#    width=50, height=50) 
 
 # ----------------------------------------------------------------------------------
 # RUN TK WINDOW
