@@ -32,6 +32,7 @@ This section explains the process of setting up SIREN
 * [`PyDejavu`](), for audio fingerprinting
 
 1. Install the dependencies using the command below <br />
+If portaudio module is not installed in your system, refer to [Troubleshoot section](###Troubleshoot issues)
  `pip3 install -r requirements.txt`
 
 2. To simulate a login and recovery environment in Linux, install [`tkinker`]() <br />
@@ -51,16 +52,16 @@ This section explains the process of setting up SIREN
 
 6. Create a database to store audio fingerprints <br />
 `mysql -u root -p` <br />
-`CREATE DATABASE IF NOT EXISTS audiobank;` <br />
+`CREATE DATABASE IF NOT EXISTS audioPass;` <br />
 
-7. Edit [database configuration]() according to the database credentials set up in Step 5.
+7. Edit [database configuration](login/dejavu.cnf.SAMPLE) according to the database credentials set up in Step 5.
 ```
 {
     "database": {
         "host": "127.0.0.1",
         "user": "root",
         "password": "password",
-        "database": "audiobank"
+        "database": "audioPass"
     },
     "database_type": "mysql"
 }
@@ -81,6 +82,7 @@ sudo pip install pyaudio
 ## 👨‍💻 Running the program
 
 ### Run the music generator program start generating a key for a specific user
+`cd music_generator`
 `python3 music_generator.py`
 
 ![Music Generator](screenshots/music_generator.png)
@@ -99,6 +101,7 @@ In an actual scenario, this audio file can be saved on a separate system such as
 ![Saving the audio key](screenshots/save_generated_key.png)
 
 ### Start fingerprinting the generated audio key
+`cd login`
 `python3 savePassAudio.py`
 
 ![Fingerprinting audio](screenshots/audio_fingerprinting.png)
@@ -114,7 +117,7 @@ In an actual scenario, this audio file can be saved on a separate system such as
 
 ### To recover the account, click on the audio key button and play the corresponding audio key for the user
 
-![Start recording audio key](IMAGELINK)
+![Start recording audio key](screenshots/record_audio_key.png)
 
 ### When the audio played matches the audio fingerprint hashes for the user, access to the system is recovered
 
