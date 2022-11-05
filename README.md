@@ -1,4 +1,7 @@
 <h1 align="center">SIREN 🚨</h1> <br />
+<p align="center">
+<img src="screenshots/logo2.jpg" />
+</p>
 
 SIREN is an implementation of an audio-based recovery key aim to impede digital forensic investigator from gaining access to a system easily. <br />
 This is a project for ICT2202 Digital Forensics that sets out to explore a technical solution that can be used for engaging in anti-forensics. <br />
@@ -32,7 +35,7 @@ This section explains the process of setting up SIREN
 * [`PyDejavu`](), for audio fingerprinting
 
 1. Install the dependencies using the command below <br />
-If portaudio module is not installed in your system, refer to [Troubleshoot section](###Troubleshoot issues)
+If portaudio module is not installed in your system, refer to [Troubleshoot section](#troubleshoot) <br />
  `pip3 install -r requirements.txt`
 
 2. To simulate a login and recovery environment in Linux, install [`tkinker`]() <br />
@@ -67,7 +70,7 @@ If portaudio module is not installed in your system, refer to [Troubleshoot sect
 }
 ```
 
-### Troubleshoot issues
+### Troubleshoot issues <a href="#troubleshoot" id="troubleshoot"/>
 If `pyaudio` failed to install on Ubuntu machines, install portaudio modules using the steps below  <br />
 ```
 sudo apt-get install libasound-dev
@@ -82,7 +85,7 @@ sudo pip install pyaudio
 ## 👨‍💻 Running the program
 
 ### Run the music generator program start generating a key for a specific user
-`cd music_generator`
+`cd music_generator` <br />
 `python3 music_generator.py`
 
 ![Music Generator](screenshots/music_generator.png)
@@ -101,7 +104,7 @@ In an actual scenario, this audio file can be saved on a separate system such as
 ![Saving the audio key](screenshots/save_generated_key.png)
 
 ### Start fingerprinting the generated audio key
-`cd login`
+`cd login` <br />
 `python3 savePassAudio.py`
 
 ![Fingerprinting audio](screenshots/audio_fingerprinting.png)
@@ -126,7 +129,7 @@ In an actual scenario, this audio file can be saved on a separate system such as
 
 
 ## 🙏 Credits
-
+* [PyDejavu](https://pypi.org/project/PyDejavu/) - Audio fingerprinting library
 
 
 
