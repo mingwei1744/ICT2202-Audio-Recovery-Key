@@ -113,16 +113,6 @@ profileLabel.place(x=305, y=50)
 # USERNAME
 # ----------------------------------------------------------------------------------
 
-# Username based on selected local user. Default: User - LOCAL USERS for testing
-# def getUser(selectedUser):
-#     if selectedUser == user:
-#         labelUsername.config(text="User")
-#     elif selectedUser == admin:
-#         labelUsername.config(text="Admin")
-#     else:
-#         labelUsername.config(text="User")
-# labelUsername = Label(loginPage, text="User")
-
 def inFocusLogin(args):
     inputUsername.delete(0, END)
 
@@ -206,7 +196,6 @@ def login():
             print("Wrong user password")
             inputPassword.delete(0, END)
             maxLoginAttempts -=1
-            labelErrorMsg.after(0, labelErrorMsg.destroy)
             errorMessage(passwordError)
 
     elif maxLoginAttempts == 1:
@@ -226,7 +215,6 @@ def login():
             inputPassword.insert(0, "DISABLED")
             inputPassword.config(state="disabled", show="", justify="center", disabledbackground="grey")
             hideBtn.config(state="disabled")
-            labelErrorMsg.after(0, labelErrorMsg.destroy)
             errorMessage(passwordLimitError)
             audioKeyInput()
 
@@ -236,7 +224,6 @@ enterBtn = Button(image=enterIcon, command=login, relief=FLAT, bg=inputColor, ac
 enterBtn.place(x=580, y=410)
 
 # Error message label
-labelErrorMsg = Label(loginPage, text="", bg=labelColor)
 def errorMessage(msg):
     labelErrorMsg = Label(loginPage, text=msg, bg=labelColor)
     labelErrorMsg.config(font=(font, 9), fg=fontColor, justify='center')
@@ -252,7 +239,7 @@ def audioKeyInput():
         x=380, y=480,
         width=100, height=50)
 
-
+# When authentication is successful enable the password button and remove Audio Key button
 def recoverSuccess():
     global maxLoginAttempts
     maxLoginAttempts += 3
@@ -265,40 +252,7 @@ def recoverSuccess():
 
     inputPassword.bind("<FocusIn>", inFocus)
     inputPassword.bind("<FocusOut>", outFocus)
-    labelErrorMsg.after(0, labelErrorMsg.destroy)
     audioBtn.place_forget()
-
-
-# ----------------------------------------------------------------------------------
-# USER CREDENTIALS - LOCAL USERS for testing
-# ----------------------------------------------------------------------------------
-# users = {
-#    "user": "userPassword",
-#    "admin": "adminPassword"}
-
-# user = list(users.keys())[0]
-# userPwd = list(users.values())[0]
-
-# admin = list(users.keys())[1]
-# adminPwd = list(users.values())[1]
-
-# List of Local Users
-# userIcon = PhotoImage(file=f"./images/user.png")
-# userLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
-# userLabel.place(x=1, y=650)
-# userBtn = Button(text=user, command=lambda username=user: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
-# userBtn.config(font=(font, 12), fg=fontColor)
-# userBtn.place(
-#    x=55, y=650,
-#    width=50, height=50) 
-
-# adminLabel = Label(loginPage, image=userIcon, relief=FLAT, bg=backgroundColor)
-# adminLabel.place(x=1, y=705)
-# adminBtn = Button(text=admin, command=lambda username=admin: getUser(username), relief=FLAT, bg=backgroundColor, activebackground=backgroundColor)
-# adminBtn.config(font=(font, 12), fg=fontColor)
-# adminBtn.place(
-#    x=55, y=705,
-#    width=50, height=50) 
 
 
 # ----------------------------------------------------------------------------------
